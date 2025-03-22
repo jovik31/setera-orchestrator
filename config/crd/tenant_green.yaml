@@ -1,0 +1,23 @@
+apiVersion: setera.com/v1
+kind: Tenant
+metadata:
+  name: tenant-green
+  namespace: default
+spec:
+  name: "tenant-green"
+  vni: 2
+  zones: 2
+  selectors:
+    node: "test-cluster-worker"
+    node2: "test-cluster-worker2"
+  nodes:
+    - name: "test-cluster-worker"
+      nodeIP: "172.18.0.2"
+      prefix: 30
+      vtepIp: "10.244.0.0"
+      vtepMac: "5e:7b:65:1e:f6:8c"
+    - name: " test-cluster-worker2"
+      nodeIP: "172.18.0.3"
+      prefix: 30
+      vtepIp: "10.244.1.0"
+      vtepMac: "de:8a:ee:a9:c4:25"

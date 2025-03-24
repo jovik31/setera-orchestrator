@@ -58,18 +58,22 @@ spec:
                   - prefix
                   type: object
                 type: array
-              selectors:
-                additionalProperties:
-                  type: string
-                type: object
               vni:
                 type: integer
               zones:
-                type: integer
+                items:
+                  properties:
+                    name:
+                      type: string
+                    selectors:
+                      additionalProperties:
+                        type: string
+                      type: object
+                  type: object
+                type: array
             required:
             - name
             - nodes
-            - selectors
             - vni
             - zones
             type: object

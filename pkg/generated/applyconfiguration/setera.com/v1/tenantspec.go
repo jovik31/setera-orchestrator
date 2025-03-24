@@ -20,11 +20,10 @@ package v1
 // TenantSpecApplyConfiguration represents a declarative configuration of the TenantSpec type for use
 // with apply.
 type TenantSpecApplyConfiguration struct {
-	Name         *string                  `json:"name,omitempty"`
-	VNI          *int                     `json:"vni,omitempty"`
-	Zones        *int                     `json:"zones,omitempty"`
-	Nodes        []NodeApplyConfiguration `json:"nodes,omitempty"`
-	Requirements map[string]string        `json:"selectors,omitempty"`
+	Name  *string                  `json:"name,omitempty"`
+	VNI   *int                     `json:"vni,omitempty"`
+	Zones []ZoneApplyConfiguration `json:"zones,omitempty"`
+	Nodes []NodeApplyConfiguration `json:"nodes,omitempty"`
 }
 
 // TenantSpecApplyConfiguration constructs a declarative configuration of the TenantSpec type for use with
@@ -49,11 +48,16 @@ func (b *TenantSpecApplyConfiguration) WithVNI(value int) *TenantSpecApplyConfig
 	return b
 }
 
-// WithZones sets the Zones field in the declarative configuration to the given value
-// and returns the receiver, so that objects can be built by chaining "With" function invocations.
-// If called multiple times, the Zones field is set to the value of the last call.
-func (b *TenantSpecApplyConfiguration) WithZones(value int) *TenantSpecApplyConfiguration {
-	b.Zones = &value
+// WithZones adds the given value to the Zones field in the declarative configuration
+// and returns the receiver, so that objects can be build by chaining "With" function invocations.
+// If called multiple times, values provided by each call will be appended to the Zones field.
+func (b *TenantSpecApplyConfiguration) WithZones(values ...*ZoneApplyConfiguration) *TenantSpecApplyConfiguration {
+	for i := range values {
+		if values[i] == nil {
+			panic("nil value passed to WithZones")
+		}
+		b.Zones = append(b.Zones, *values[i])
+	}
 	return b
 }
 
@@ -66,20 +70,6 @@ func (b *TenantSpecApplyConfiguration) WithNodes(values ...*NodeApplyConfigurati
 			panic("nil value passed to WithNodes")
 		}
 		b.Nodes = append(b.Nodes, *values[i])
-	}
-	return b
-}
-
-// WithRequirements puts the entries into the Requirements field in the declarative configuration
-// and returns the receiver, so that objects can be build by chaining "With" function invocations.
-// If called multiple times, the entries provided by each call will be put on the Requirements field,
-// overwriting an existing map entries in Requirements field with the same key.
-func (b *TenantSpecApplyConfiguration) WithRequirements(entries map[string]string) *TenantSpecApplyConfiguration {
-	if b.Requirements == nil && len(entries) > 0 {
-		b.Requirements = make(map[string]string, len(entries))
-	}
-	for k, v := range entries {
-		b.Requirements[k] = v
 	}
 	return b
 }

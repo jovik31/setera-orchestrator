@@ -70,7 +70,7 @@ func (o *Orchestrator) addTenant(key string) error {
 	//FIXME: The number of zones can be validated in a webhook, upon creation of the tenant object, as well as the existing selectors
 	// extract the tenant zones and selectors
 	zones := tenant.Spec.Zones            // zones are equivalent to the number of nodes the tenant is going to be deployed to
-	selectors := tenant.Spec.Requirements // the required selectors that the nodes must have for this tenant to be deployed to them
+	//selectors := tenant.Spec.Zones[].Requirements // the required selectors that the nodes must have for this tenant to be deployed to them
 
 
 

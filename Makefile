@@ -9,22 +9,29 @@ help: ## Display this help
 
 ##@ Manifest Generation
 
-.PHONY: rbac-orchestrator rbac-agent
 
-
-##@ Development
-
-##General
+##Generate CRDS
 .PHONY: crds
 crds: controller-gen ##Generate Webhook configuration, ClusterRole and CustomResourceDefinition objects
 	$(CONTROLLER_GEN) crd paths="./..." output:crd:artifacts:config=config/crd/bases 
 
-.PHONY: rbac-orchestrator
+
+##Generate rbacs
+
 .PHONY: rbac
-rbac: controller-gen ##Generate RBAC configuration
-	$(CONTROLLER_GEN) rbac:roleName=mycontroller-role clusterName=cluster-role paths=./... output:dir=./config/rbac
+rbac: rbac-agent rbac-orchestrator
 
+##Generate RBAC configuration for the agent
+.PHONY: rbac-agent
+rbac-agent: controller-gen
+	$(CONTROLLER_GEN) rbac:roleName=agent-role paths=./internal/agent output:rbac:dir=./config/rbac/agent
 
+##Generate RBAC configuration for the orchestrator
+.PHONY: rbac-orchestrator
+rbac-orchestrator: controller-gen 
+	$(CONTROLLER_GEN) rbac:roleName=orchestrator-role paths=./internal/orchestrator output:rbac:dir=./config/rbac/orchestrator
+
+##@ Development
 .PHONY: fmt
 fmt: ## Run go fmt against code
 	go fmt ./...
@@ -47,7 +54,6 @@ build: manifests generate fmt vet ## Build manager binary
 run: manifests generate fmt vet ## Run against the configured Kubernetes cluster in ~/.kube/config
 	go run ./main.go
 
-33
 ##Output directories
 
 RBAC_ORCHESTRATOR_DIR = config/rbac/orchestrator

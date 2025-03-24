@@ -17,13 +17,10 @@ type WebhookServer struct {
 	server             *http.Server
 	seterav1Clientset  seterav1clientset.Interface
 	kubernetsClientset kubernetes.Interface
-
-	logger *klog.Logger
 }
 
 func NewWebhookServer(seteraClient seterav1clientset.Interface, k8sClientset kubernetes.Interface) *WebhookServer {
 
-	klog.InitFlags(nil)
 	return &WebhookServer{
 		port: serverPort,
 		//certFile:           tlsCertFile,
@@ -37,15 +34,17 @@ func NewWebhookServer(seteraClient seterav1clientset.Interface, k8sClientset kub
 func (ws *WebhookServer) Start() error {
 
 	router := http.NewServeMux()
-	router.HandleFunc(validatePodEndpoint, ws.validateHandler)
-	//http.HandleFunc(validatePodEndpoint, ws.HandlePodValidation)
-	//http.HandleFunc(validateTenantEndpoint, ws.HandleTenantValidation)
+	router.HandleFunc(validateEndpoint, ws.admissionValidationHandler)
+
+	middleware := runMiddleware(
+		loggingMiddleware,
+		validatingMiddleware,
+	)
 
 	ws.server = &http.Server{
 		Addr:    ws.port,
-		Handler: router,
+		Handler: middleware(router),
 	}
-
-	klog.Info("Starting webhook server on ", ws.server.Addr)
+	klog.Info("started webhook server at", ws.server.Addr)
 	return ws.server.ListenAndServe()
 }

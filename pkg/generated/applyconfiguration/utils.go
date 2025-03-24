@@ -46,6 +46,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &seteracomv1.TenantInfraApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("TenantSpec"):
 		return &seteracomv1.TenantSpecApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("Zone"):
+		return &seteracomv1.ZoneApplyConfiguration{}
 
 	}
 	return nil

@@ -20,13 +20,11 @@ type Tenant struct {
 	Spec TenantSpec `json:"spec"`
 }
 
-
 type TenantSpec struct {
-	Name         string            `json:"name"`      //Tenant Name
-	VNI          int               `json:"vni"`       //Tenant VNI identification
-	Zones        int               `json:"zones"`     //Number of nodes where the tenant is to be deployed
-	Nodes        []Node            `json:"nodes"`     //Node list where the tenant is deployed
-	Requirements map[string]string `json:"selectors"` // Tenant requirements in the form of node labels and selectors
+	Name  string `json:"name"`  //Tenant Name
+	VNI   int    `json:"vni"`   //Tenant VNI identification
+	Zones []Zone `json:"zones"` //Number of nodes where the tenant is to be deployed
+	Nodes []Node `json:"nodes"` //Node list where the tenant is deployed
 }
 
 type Node struct {
@@ -35,6 +33,11 @@ type Node struct {
 	VtepIp  string `json:"vtepIp,omitempty"`  //IP of the Vtep device for this specific node and tenant
 	NodeIP  string `json:"nodeIP,omitempty"`  //Node IP where the tenant is deployed
 	Prefix  int    `json:"prefix"`            //Size of tenant CIDR in the node
+}
+
+type Zone struct {
+	Name         string            `json:"name,omitempty"`      // zone/node name
+	Requirements map[string]string `json:"selectors,omitempty"` //tenant requirements that a zone must comply or have, in the form of node labels and selectors
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

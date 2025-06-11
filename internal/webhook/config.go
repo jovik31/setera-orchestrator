@@ -12,10 +12,10 @@ const (
 	//validateTenantEndpoint     string = "/validate/tenant"
 	//validateDeploymentEndpoint string = "validate/deployment"
 	//validateDaemonsetEndpoint  string = "validate/daemonset" // not sure if i should validate daemonsets at this moment in time
-	tlsCertFile string = "tls.crt"
-	tlsCertKey  string = "tls.key"
-	tlsDir      string = "/run/secrets/tls"
-	serverPort  string = ":8443"
+	//tlsCert string = "tls.crt"
+	//tlsKey  string = "tls.key"
+	//tlsDir      string = "/run/secrets/tls"
+	serverPort string = ":8443"
 
 	contentTypeHeader string = "content-type"
 	contentTypeJSON   string = "application/json"

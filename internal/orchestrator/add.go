@@ -19,7 +19,7 @@ const TenantFinalizer = "finalizer.setera.com"
 func (o *Orchestrator) addTenant(key string) error {
 	// add tenant to the k8s cluster
 	/*[x get the tenant object from the cache
-	[x retrieve the nodestores existing in the cluster
+	[x retrieve the nodestores existing in the cluster //this part may not be needed if it is only applied
 	[x] check if all nodestores are present
 	[x] check if the tenant has a finalizer
 	[ ] check the tenant selecctors and requirements
@@ -69,13 +69,11 @@ func (o *Orchestrator) addTenant(key string) error {
 	// FIXME: check if the tenant is already deployed
 	//FIXME: The number of zones can be validated in a webhook, upon creation of the tenant object, as well as the existing selectors
 	// extract the tenant zones and selectors
-	zones := tenant.Spec.Zones            // zones are equivalent to the number of nodes the tenant is going to be deployed to
+	_ = tenant.Spec.Zones // zones are equivalent to the number of nodes the tenant is going to be deployed to
 	//selectors := tenant.Spec.Zones[].Requirements // the required selectors that the nodes must have for this tenant to be deployed to them
 
-
-
 	// get the nodestores from the cache
-	nodestores, err := o.nodeStoreLister.List(labels.Everything())
+	_, err = o.nodeStoreLister.List(labels.Everything())
 	if err != nil {
 		o.logger.Error(err, "Error in getting nodestores from cache")
 	}

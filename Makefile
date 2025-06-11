@@ -44,6 +44,17 @@ vet: ## Run go vet against code
 lint: golangci-lint ## Run golangci-lint against code
 	$(GOLANGCI_LINT) run
 
+.PHONY: webhook-ssl
+webhook-ssl: 
+	mkdir -p ${TMPDIR}/k8s-webhook-server/serving-certs
+	openssl req -x509 \
+			-newkey rsa:2048 \
+			-nodes \
+			-keyout ${TMPDIR}/k8s-webhook-server/serving-certs/tls.key \
+			-out ${TMPDIR}/k8s-webhook-server/serving-certs/tls.crt \
+			-days 60
+
+
 ##@ Build
 
 .PHONY: build
@@ -71,6 +82,8 @@ $(LOCALBIN):
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 
+##SSL DIR
+TMPDIR = ./
 
 ## Tool Versions
 CONTROLLER_TOOLS_VERSION ?= v0.16.4

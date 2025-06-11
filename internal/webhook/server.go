@@ -10,22 +10,20 @@ import (
 )
 
 type WebhookServer struct {
-	port string
-	//certFile           string
-	//keyFile            string
-	//tlsDir             string
-	server             *http.Server
+	port               string
+	tlsCert            string
+	tlsKey             string
+	Server             *http.Server
 	seterav1Clientset  seterav1clientset.Interface
 	kubernetsClientset kubernetes.Interface
 }
 
-func NewWebhookServer(seteraClient seterav1clientset.Interface, k8sClientset kubernetes.Interface) *WebhookServer {
+func NewWebhookServer(seteraClient seterav1clientset.Interface, k8sClientset kubernetes.Interface, tlsCert string, tlsKey string) *WebhookServer {
 
 	return &WebhookServer{
-		port: serverPort,
-		//certFile:           tlsCertFile,
-		//keyFile:            tlsCertKey,
-		//tlsDir:             tlsDir,
+		port:               serverPort,
+		tlsCert:            tlsCert,
+		tlsKey:             tlsKey,
 		seterav1Clientset:  seteraClient,
 		kubernetsClientset: k8sClientset,
 	}
@@ -41,10 +39,11 @@ func (ws *WebhookServer) Start() error {
 		validatingMiddleware,
 	)
 
-	ws.server = &http.Server{
+	ws.Server = &http.Server{
 		Addr:    ws.port,
 		Handler: middleware(router),
 	}
-	klog.Info("started webhook server at", ws.server.Addr)
-	return ws.server.ListenAndServe()
+
+	klog.Info("started webhook server at", ws.Server.Addr)
+	return ws.Server.ListenAndServeTLS(ws.tlsCert, ws.tlsKey)
 }
